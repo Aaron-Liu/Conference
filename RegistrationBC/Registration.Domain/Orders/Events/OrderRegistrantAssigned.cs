@@ -10,7 +10,7 @@ namespace Registration.Orders
         public Registrant Registrant { get; private set; }
 
         public OrderRegistrantAssigned() { }
-        public OrderRegistrantAssigned(Order order, Guid conferenceId, Registrant registrant) : base(order)
+        public OrderRegistrantAssigned(Guid conferenceId, Registrant registrant)
         {
             ConferenceId = conferenceId;
             Registrant = registrant;

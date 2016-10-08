@@ -9,8 +9,8 @@ namespace Registration.Orders
         public OrderStatus OrderStatus { get; private set; }
 
         public OrderPaymentConfirmed() { }
-        public OrderPaymentConfirmed(Order order, Guid conferenceId, OrderStatus orderStatus)
-            : base(order, conferenceId)
+        public OrderPaymentConfirmed(Guid conferenceId, OrderStatus orderStatus)
+            : base(conferenceId)
         {
             OrderStatus = orderStatus;
         }

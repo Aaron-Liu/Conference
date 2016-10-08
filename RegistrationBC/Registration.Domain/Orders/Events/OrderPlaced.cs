@@ -13,8 +13,7 @@ namespace Registration.Orders
         public string AccessCode { get; private set; }
 
         public OrderPlaced() { }
-        public OrderPlaced(Order order, Guid conferenceId, OrderTotal orderTotal, DateTime reservationExpirationDate, string accessCode)
-            : base(order)
+        public OrderPlaced(Guid conferenceId, OrderTotal orderTotal, DateTime reservationExpirationDate, string accessCode)
         {
             ConferenceId = conferenceId;
             OrderTotal = orderTotal;

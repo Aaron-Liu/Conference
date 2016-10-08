@@ -10,8 +10,7 @@ namespace Payments
         public Guid ConferenceId { get; private set; }
 
         public PaymentRejected() { }
-        public PaymentRejected(Payment payment, Guid orderId, Guid conferenceId)
-            : base(payment)
+        public PaymentRejected(Guid orderId, Guid conferenceId)
         {
             OrderId = orderId;
             ConferenceId = conferenceId;

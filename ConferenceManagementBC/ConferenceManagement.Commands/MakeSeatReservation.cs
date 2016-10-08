@@ -10,6 +10,7 @@ namespace ConferenceManagement.Commands
         public Guid ReservationId { get; set; }
         public IEnumerable<SeatReservationItemInfo> Seats { get; set; }
 
+        public MakeSeatReservation() { }
         public MakeSeatReservation(Guid conferenceId) : base(conferenceId)
         {
             this.Seats = new List<SeatReservationItemInfo>();

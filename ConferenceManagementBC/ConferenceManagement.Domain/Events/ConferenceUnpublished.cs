@@ -7,6 +7,5 @@ namespace ConferenceManagement
     public class ConferenceUnpublished : DomainEvent<Guid>
     {
         public ConferenceUnpublished() { }
-        public ConferenceUnpublished(Conference conference) : base(conference) { }
     }
 }

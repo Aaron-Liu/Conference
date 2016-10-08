@@ -14,8 +14,7 @@ namespace Payments
         public IEnumerable<PaymentItem> Items { get; private set; }
 
         public PaymentInitiated() { }
-        public PaymentInitiated(Payment payment, Guid orderId, Guid conferenceId, string description, decimal totalAmount, IEnumerable<PaymentItem> items)
-            : base(payment)
+        public PaymentInitiated(Guid orderId, Guid conferenceId, string description, decimal totalAmount, IEnumerable<PaymentItem> items)
         {
             OrderId = orderId;
             ConferenceId = conferenceId;

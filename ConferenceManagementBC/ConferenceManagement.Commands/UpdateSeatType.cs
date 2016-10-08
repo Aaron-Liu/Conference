@@ -12,6 +12,7 @@ namespace ConferenceManagement.Commands
         public decimal Price { get; set; }
         public int Quantity { get; set; }
 
+        public UpdateSeatType() { }
         public UpdateSeatType(Guid conferenceId) : base(conferenceId) { }
     }
 }

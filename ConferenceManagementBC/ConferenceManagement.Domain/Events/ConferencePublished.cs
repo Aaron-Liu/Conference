@@ -7,6 +7,5 @@ namespace ConferenceManagement
     public class ConferencePublished : DomainEvent<Guid>
     {
         public ConferencePublished() { }
-        public ConferencePublished(Conference conference) : base(conference) { }
     }
 }

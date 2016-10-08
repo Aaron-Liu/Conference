@@ -9,7 +9,7 @@ namespace Registration.SeatAssigning
         public int Position { get; private set; }
 
         public SeatUnassigned() { }
-        public SeatUnassigned(OrderSeatAssignments source, int position) : base(source)
+        public SeatUnassigned(int position)
         {
             Position = position;
         }

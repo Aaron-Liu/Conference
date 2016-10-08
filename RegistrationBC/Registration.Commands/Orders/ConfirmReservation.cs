@@ -9,6 +9,7 @@ namespace Registration.Commands.Orders
     {
         public bool IsReservationSuccess { get; set; }
 
+        public ConfirmReservation() { }
         public ConfirmReservation(Guid orderId, bool isReservationSuccess) : base(orderId)
         {
             IsReservationSuccess = isReservationSuccess;

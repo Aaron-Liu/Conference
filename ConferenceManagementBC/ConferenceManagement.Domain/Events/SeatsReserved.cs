@@ -12,8 +12,7 @@ namespace ConferenceManagement
         public IEnumerable<SeatAvailableQuantity> SeatAvailableQuantities { get; private set; }
 
         public SeatsReserved() { }
-        public SeatsReserved(Conference conference, Guid reservationId, IEnumerable<ReservationItem> reservationItems, IEnumerable<SeatAvailableQuantity> seatAvailableQuantities)
-            : base(conference)
+        public SeatsReserved(Guid reservationId, IEnumerable<ReservationItem> reservationItems, IEnumerable<SeatAvailableQuantity> seatAvailableQuantities)
         {
             ReservationId = reservationId;
             ReservationItems = reservationItems;

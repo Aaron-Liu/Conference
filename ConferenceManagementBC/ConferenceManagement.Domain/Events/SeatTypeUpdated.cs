@@ -7,7 +7,7 @@ namespace ConferenceManagement
     public class SeatTypeUpdated : SeatTypeEvent
     {
         public SeatTypeUpdated() { }
-        public SeatTypeUpdated(Conference conference, Guid seatTypeId, SeatTypeInfo seatTypeInfo)
-            : base(conference, seatTypeId, seatTypeInfo) { }
+        public SeatTypeUpdated(Guid seatTypeId, SeatTypeInfo seatTypeInfo)
+            : base(seatTypeId, seatTypeInfo) { }
     }
 }

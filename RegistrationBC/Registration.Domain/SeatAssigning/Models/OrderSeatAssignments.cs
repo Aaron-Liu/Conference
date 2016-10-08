@@ -28,7 +28,7 @@ namespace Registration.SeatAssigning
                     assignments.Add(new SeatAssignment(position++, orderLine.SeatQuantity.Seat));
                 }
             }
-            ApplyEvent(new OrderSeatAssignmentsCreated(this, orderId, assignments));
+            ApplyEvent(new OrderSeatAssignmentsCreated(orderId, assignments));
         }
         public void AssignSeat(int position, Attendee attendee)
         {
@@ -39,7 +39,7 @@ namespace Registration.SeatAssigning
             }
             if (current.Attendee == null || attendee != current.Attendee)
             {
-                ApplyEvent(new SeatAssigned(this, current.Position, current.Seat, attendee));
+                ApplyEvent(new SeatAssigned(current.Position, current.Seat, attendee));
             }
         }
         public void UnassignSeat(int position)
@@ -49,7 +49,7 @@ namespace Registration.SeatAssigning
             {
                 throw new ArgumentOutOfRangeException("position");
             }
-            ApplyEvent(new SeatUnassigned(this, position));
+            ApplyEvent(new SeatUnassigned(position));
         }
 
         private void Handle(OrderSeatAssignmentsCreated evnt)

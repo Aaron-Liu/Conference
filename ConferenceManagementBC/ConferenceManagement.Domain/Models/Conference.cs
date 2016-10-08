@@ -5,7 +5,6 @@ using ENode.Domain;
 
 namespace ConferenceManagement
 {
-    [Serializable]
     public class Conference : AggregateRoot<Guid>
     {
         private ConferenceInfo _info;
@@ -15,12 +14,12 @@ namespace ConferenceManagement
 
         public Conference(Guid id, ConferenceInfo info) : base(id)
         {
-            ApplyEvent(new ConferenceCreated(this, info));
+            ApplyEvent(new ConferenceCreated(info));
         }
 
         public void Update(ConferenceEditableInfo info)
         {
-            ApplyEvent(new ConferenceUpdated(this, info));
+            ApplyEvent(new ConferenceUpdated(info));
         }
         public void Publish()
         {
@@ -28,7 +27,7 @@ namespace ConferenceManagement
             {
                 throw new Exception("Conference already published.");
             }
-            ApplyEvent(new ConferencePublished(this));
+            ApplyEvent(new ConferencePublished());
         }
         public void Unpublish()
         {
@@ -36,11 +35,11 @@ namespace ConferenceManagement
             {
                 throw new Exception("Conference already unpublished.");
             }
-            ApplyEvent(new ConferenceUnpublished(this));
+            ApplyEvent(new ConferenceUnpublished());
         }
         public void AddSeat(SeatTypeInfo seatTypeInfo, int quantity)
         {
-            ApplyEvent(new SeatTypeAdded(this, Guid.NewGuid(), seatTypeInfo, quantity));
+            ApplyEvent(new SeatTypeAdded(Guid.NewGuid(), seatTypeInfo, quantity));
         }
         public void UpdateSeat(Guid seatTypeId, SeatTypeInfo seatTypeInfo, int quantity)
         {
@@ -49,7 +48,7 @@ namespace ConferenceManagement
             {
                 throw new Exception("Seat type not exist.");
             }
-            ApplyEvent(new SeatTypeUpdated(this, seatTypeId, seatTypeInfo));
+            ApplyEvent(new SeatTypeUpdated(seatTypeId, seatTypeInfo));
 
             if (seatType.Quantity != quantity)
             {
@@ -58,7 +57,7 @@ namespace ConferenceManagement
                 {
                     throw new Exception(string.Format("Quantity cannot be small than total reservation quantity:{0}", totalReservationQuantity));
                 }
-                ApplyEvent(new SeatTypeQuantityChanged(this, seatTypeId, quantity, quantity - totalReservationQuantity));
+                ApplyEvent(new SeatTypeQuantityChanged(seatTypeId, quantity, quantity - totalReservationQuantity));
             }
         }
         public void RemoveSeat(Guid seatTypeId)
@@ -71,7 +70,7 @@ namespace ConferenceManagement
             {
                 throw new Exception("The seat type has reservation, cannot be remove.");
             }
-            ApplyEvent(new SeatTypeRemoved(this, seatTypeId));
+            ApplyEvent(new SeatTypeRemoved(seatTypeId));
         }
         public void MakeReservation(Guid reservationId, IEnumerable<ReservationItem> reservationItems)
         {
@@ -107,7 +106,7 @@ namespace ConferenceManagement
                 }
                 seatAvailableQuantities.Add(new SeatAvailableQuantity(seatType.Id, availableQuantity - reservationItem.Quantity));
             }
-            ApplyEvent(new SeatsReserved(this, reservationId, reservationItems, seatAvailableQuantities));
+            ApplyEvent(new SeatsReserved(reservationId, reservationItems, seatAvailableQuantities));
         }
         public void CommitReservation(Guid reservationId)
         {
@@ -120,7 +119,7 @@ namespace ConferenceManagement
                     var seatType = _seatTypes.Single(x => x.Id == reservationItem.SeatTypeId);
                     seatQuantities.Add(new SeatQuantity(seatType.Id, seatType.Quantity - reservationItem.Quantity));
                 }
-                ApplyEvent(new SeatsReservationCommitted(this, reservationId, seatQuantities));
+                ApplyEvent(new SeatsReservationCommitted(reservationId, seatQuantities));
             }
         }
         public void CancelReservation(Guid reservationId)
@@ -135,7 +134,7 @@ namespace ConferenceManagement
                     var availableQuantity = seatType.Quantity - GetTotalReservationQuantity(seatType.Id);
                     seatAvailableQuantities.Add(new SeatAvailableQuantity(seatType.Id, availableQuantity + reservationItem.Quantity));
                 }
-                ApplyEvent(new SeatsReservationCancelled(this, reservationId, seatAvailableQuantities));
+                ApplyEvent(new SeatsReservationCancelled(reservationId, seatAvailableQuantities));
             }
         }
 

@@ -8,6 +8,7 @@ namespace Registration.Commands.Orders
     {
         public bool IsPaymentSuccess { get; set; }
 
+        public ConfirmPayment() { }
         public ConfirmPayment(Guid orderId, bool isPaymentSuccess) : base(orderId)
         {
             IsPaymentSuccess = isPaymentSuccess;

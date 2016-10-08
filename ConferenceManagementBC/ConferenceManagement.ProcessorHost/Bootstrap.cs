@@ -3,10 +3,8 @@ using System.Configuration;
 using System.Reflection;
 using Conference.Common;
 using ConferenceManagement.Domain.Models;
-using ECommon.Autofac;
 using ECommon.Components;
-using ECommon.JsonNet;
-using ECommon.Log4Net;
+using ECommon.Configurations;
 using ECommon.Logging;
 using ENode.Configurations;
 using ENode.Infrastructure;
@@ -78,22 +76,23 @@ namespace ConferenceManagement.ProcessorHost
             {
                 Assembly.Load("Conference.Common"),
                 Assembly.Load("ConferenceManagement.Domain"),
+                Assembly.Load("ConferenceManagement.Commands"),
                 Assembly.Load("ConferenceManagement.CommandHandlers"),
                 Assembly.Load("ConferenceManagement.MessagePublishers"),
                 Assembly.Load("ConferenceManagement.ReadModel"),
                 Assembly.Load("ConferenceManagement.Repositories.Dapper"),
-                Assembly.Load("ConferenceManagement.ProcessorHost")
+                Assembly.Load("ConferenceManagement.Messages"),
+                Assembly.GetExecutingAssembly()
             };
             var setting = new ConfigurationSetting
             {
-                SqlServerDefaultConnectionString = ConfigSettings.ConferenceENodeConnectionString
+                SqlDefaultConnectionString = ConfigSettings.ConferenceENodeConnectionString
             };
 
             _enodeConfiguration = _ecommonConfiguration
                 .CreateENode(setting)
                 .RegisterENodeComponents()
                 .RegisterBusinessComponents(assemblies)
-                .RegisterAllTypeCodes()
                 .UseSqlServerLockService()
                 .UseSqlServerCommandStore()
                 .UseSqlServerEventStore()

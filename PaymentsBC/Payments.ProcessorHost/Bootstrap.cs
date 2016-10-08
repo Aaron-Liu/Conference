@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Reflection;
 using Conference.Common;
-using ECommon.Autofac;
 using ECommon.Components;
-using ECommon.JsonNet;
-using ECommon.Log4Net;
+using ECommon.Configurations;
 using ECommon.Logging;
 using ENode.Configurations;
 using ENode.Infrastructure;
@@ -75,22 +73,23 @@ namespace Payments.ProcessorHost
             var assemblies = new[]
             {
                 Assembly.Load("Conference.Common"),
+                Assembly.Load("Payments.Commands"),
                 Assembly.Load("Payments.Domain"),
+                Assembly.Load("Payments.Messages"),
                 Assembly.Load("Payments.CommandHandlers"),
                 Assembly.Load("Payments.MessagePublishers"),
                 Assembly.Load("Payments.ReadModel"),
-                Assembly.Load("Payments.ProcessorHost")
+                Assembly.GetExecutingAssembly()
             };
             var setting = new ConfigurationSetting
             {
-                SqlServerDefaultConnectionString = ConfigSettings.ConferenceENodeConnectionString
+                SqlDefaultConnectionString = ConfigSettings.ConferenceENodeConnectionString
             };
 
             _enodeConfiguration = _ecommonConfiguration
                 .CreateENode(setting)
                 .RegisterENodeComponents()
                 .RegisterBusinessComponents(assemblies)
-                .RegisterAllTypeCodes()
                 .UseSqlServerLockService()
                 .UseSqlServerCommandStore()
                 .UseSqlServerEventStore()

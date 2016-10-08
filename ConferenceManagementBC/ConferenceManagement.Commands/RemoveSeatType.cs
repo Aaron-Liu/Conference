@@ -8,6 +8,7 @@ namespace ConferenceManagement.Commands
     {
         public Guid SeatTypeId { get; set; }
 
+        public RemoveSeatType() { }
         public RemoveSeatType(Guid conferenceId) : base(conferenceId) { }
     }
 }

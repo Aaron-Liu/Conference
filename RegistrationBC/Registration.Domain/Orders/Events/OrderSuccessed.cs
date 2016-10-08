@@ -7,6 +7,6 @@ namespace Registration.Orders
     public class OrderSuccessed : OrderEvent
     {
         public OrderSuccessed() { }
-        public OrderSuccessed(Order order, Guid conferenceId) : base(order, conferenceId) { }
+        public OrderSuccessed(Guid conferenceId) : base(conferenceId) { }
     }
 }

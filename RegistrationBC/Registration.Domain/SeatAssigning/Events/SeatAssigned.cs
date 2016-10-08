@@ -11,7 +11,7 @@ namespace Registration.SeatAssigning
         public Attendee Attendee { get; private set; }
 
         public SeatAssigned() { }
-        public SeatAssigned(OrderSeatAssignments source, int position, SeatType seat, Attendee attendee) : base(source)
+        public SeatAssigned(int position, SeatType seat, Attendee attendee)
         {
             Position = position;
             Seat = seat;

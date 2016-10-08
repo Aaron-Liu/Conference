@@ -11,7 +11,7 @@ namespace Registration.SeatAssigning
         public IEnumerable<SeatAssignment> Assignments { get; private set; }
 
         public OrderSeatAssignmentsCreated() { }
-        public OrderSeatAssignmentsCreated(OrderSeatAssignments source, Guid orderId, IEnumerable<SeatAssignment> assignments) : base(source)
+        public OrderSeatAssignmentsCreated(Guid orderId, IEnumerable<SeatAssignment> assignments)
         {
             OrderId = orderId;
             Assignments = assignments;

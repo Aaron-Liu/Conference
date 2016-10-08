@@ -11,7 +11,6 @@ namespace Payments
 
         public PaymentCompleted() { }
         public PaymentCompleted(Payment payment, Guid orderId, Guid conferenceId)
-            : base(payment)
         {
             OrderId = orderId;
             ConferenceId = conferenceId;

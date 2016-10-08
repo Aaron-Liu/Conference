@@ -8,6 +8,7 @@ namespace ConferenceManagement.Commands
     {
         public Guid ReservationId { get; set; }
 
+        public CommitSeatReservation() { }
         public CommitSeatReservation(Guid conferenceId, Guid reservationId) : base(conferenceId)
         {
             ReservationId = reservationId;

@@ -3,7 +3,7 @@ using Conference.Common;
 using ConferenceManagement.Commands;
 using ConferenceManagement.Messages;
 using ECommon.Components;
-using ECommon.Utilities;
+using ECommon.Socketing;
 using ENode.Commanding;
 using ENode.Configurations;
 using ENode.EQueue;
@@ -13,7 +13,6 @@ using ENode.Infrastructure.Impl;
 using EQueue.Clients.Consumers;
 using EQueue.Clients.Producers;
 using EQueue.Configurations;
-using EQueue.Protocols;
 using Payments.Messages;
 using Registration.Commands.Orders;
 using Registration.Commands.SeatAssignments;
@@ -32,92 +31,36 @@ namespace Registration.ProcessorHost
         private static DomainEventPublisher _domainEventPublisher;
         private static DomainEventConsumer _eventConsumer;
 
-        public static ENodeConfiguration RegisterAllTypeCodes(this ENodeConfiguration enodeConfiguration)
-        {
-            var provider = ObjectContainer.Resolve<ITypeCodeProvider>() as DefaultTypeCodeProvider;
-
-            //aggregates
-            provider.RegisterType<Order>(120);
-            provider.RegisterType<OrderSeatAssignments>(121);
-
-            //commands
-            provider.RegisterType<MakeSeatReservation>(207);
-            provider.RegisterType<CommitSeatReservation>(208);
-            provider.RegisterType<CancelSeatReservation>(209);
-
-            provider.RegisterType<PlaceOrder>(220);
-            provider.RegisterType<ConfirmReservation>(221);
-            provider.RegisterType<ConfirmPayment>(222);
-            provider.RegisterType<CloseOrder>(223);
-            provider.RegisterType<MarkAsSuccess>(224);
-            provider.RegisterType<CreateSeatAssignments>(225);
-            provider.RegisterType<AssignSeat>(226);
-            provider.RegisterType<UnassignSeat>(227);
-            provider.RegisterType<AssignRegistrantDetails>(228);
-
-            //application messages
-            provider.RegisterType<SeatsReservedMessage>(300);
-            provider.RegisterType<SeatInsufficientMessage>(301);
-            provider.RegisterType<SeatsReservationCommittedMessage>(302);
-            provider.RegisterType<SeatsReservationCancelledMessage>(303);
-
-            provider.RegisterType<PaymentCompletedMessage>(320);
-            provider.RegisterType<PaymentRejectedMessage>(321);
-
-            //domain events
-            provider.RegisterType<OrderPlaced>(420);
-            provider.RegisterType<OrderReservationConfirmed>(421);
-            provider.RegisterType<OrderPaymentConfirmed>(422);
-            provider.RegisterType<OrderClosed>(423);
-            provider.RegisterType<OrderExpired>(424);
-            provider.RegisterType<OrderSuccessed>(425);
-            provider.RegisterType<OrderSeatAssignmentsCreated>(426);
-            provider.RegisterType<SeatAssigned>(427);
-            provider.RegisterType<SeatUnassigned>(428);
-            provider.RegisterType<OrderRegistrantAssigned>(429);
-
-            //application message, domain event, or exception handlers
-            provider.RegisterType<RegistrationProcessManager>(620);
-            provider.RegisterType<OrderViewModelGenerator>(621);
-            provider.RegisterType<OrderSeatAssignmentsViewModelGenerator>(622);
-
-            return enodeConfiguration;
-        }
         public static ENodeConfiguration UseEQueue(this ENodeConfiguration enodeConfiguration)
         {
             var configuration = enodeConfiguration.GetCommonConfiguration();
 
             configuration.RegisterEQueueComponents();
 
-            var producerSetting = new ProducerSetting { BrokerProducerIPEndPoint = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerProducerPort) };
-            var consumerSetting = new ConsumerSetting { BrokerConsumerIPEndPoint = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerConsumerPort) };
+            var producerSetting = new ProducerSetting
+            {
+                BrokerAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerProducerPort),
+                BrokerAdminAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerAdminPort)
+            };
+            var consumerSetting = new ConsumerSetting
+            {
+                BrokerAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerConsumerPort),
+                BrokerAdminAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerAdminPort)
+            };
 
-            _domainEventPublisher = new DomainEventPublisher("RegistrationDomainEventPublisher", producerSetting);
+            _domainEventPublisher = new DomainEventPublisher(producerSetting);
 
             configuration.SetDefault<IMessagePublisher<DomainEventStreamMessage>, DomainEventPublisher>(_domainEventPublisher);
 
-            _commandService = new CommandService(null, "RegistrationCommandService", producerSetting);
+            _commandService = new CommandService(null, producerSetting);
 
             configuration.SetDefault<ICommandService, CommandService>(_commandService);
 
-            _commandConsumer = new CommandConsumer(
-                "RegistrationCommandConsumer",
-                "RegistrationCommandConsumerGroup",
-                consumerSetting)
-            .Subscribe(Topics.RegistrationCommandTopic);
-
-            _eventConsumer = new DomainEventConsumer(
-                "RegistrationEventConsumer",
-                "RegistrationEventConsumerGroup",
-                consumerSetting)
-            .Subscribe(Topics.RegistrationDomainEventTopic);
-
-            _applicationMessageConsumer = new ApplicationMessageConsumer(
-                "RegistrationMessageConsumer",
-                "RegistrationMessageConsumerGroup",
-                consumerSetting)
-            .Subscribe(Topics.ConferenceApplicationMessageTopic)
-            .Subscribe(Topics.PaymentApplicationMessageTopic);
+            _commandConsumer = new CommandConsumer("RegistrationCommandConsumerGroup", consumerSetting).Subscribe(Topics.RegistrationCommandTopic);
+            _eventConsumer = new DomainEventConsumer("RegistrationEventConsumerGroup", consumerSetting).Subscribe(Topics.RegistrationDomainEventTopic);
+            _applicationMessageConsumer = new ApplicationMessageConsumer("RegistrationMessageConsumerGroup", consumerSetting)
+                .Subscribe(Topics.ConferenceApplicationMessageTopic)
+                .Subscribe(Topics.PaymentApplicationMessageTopic);
 
             return enodeConfiguration;
         }

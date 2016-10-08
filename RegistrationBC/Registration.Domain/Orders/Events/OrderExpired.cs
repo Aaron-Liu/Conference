@@ -7,6 +7,6 @@ namespace Registration.Orders
     public class OrderExpired : OrderEvent
     {
         public OrderExpired() { }
-        public OrderExpired(Order order, Guid conferenceId) : base(order, conferenceId) { }
+        public OrderExpired(Guid conferenceId) : base(conferenceId) { }
     }
 }

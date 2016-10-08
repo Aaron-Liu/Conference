@@ -8,6 +8,7 @@ namespace Registration.Commands.SeatAssignments
     {
         public int Position { get; set; }
 
+        public UnassignSeat() { }
         public UnassignSeat(Guid orderId) : base(orderId) { }
     }
 }

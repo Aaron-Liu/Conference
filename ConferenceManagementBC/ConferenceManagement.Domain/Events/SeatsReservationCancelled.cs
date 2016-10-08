@@ -11,8 +11,7 @@ namespace ConferenceManagement
         public IEnumerable<SeatAvailableQuantity> SeatAvailableQuantities { get; set; }
 
         public SeatsReservationCancelled() { }
-        public SeatsReservationCancelled(Conference conference, Guid reservationId, IEnumerable<SeatAvailableQuantity> seatAvailableQuantities)
-            : base(conference)
+        public SeatsReservationCancelled(Guid reservationId, IEnumerable<SeatAvailableQuantity> seatAvailableQuantities)
         {
             ReservationId = reservationId;
             SeatAvailableQuantities = seatAvailableQuantities;

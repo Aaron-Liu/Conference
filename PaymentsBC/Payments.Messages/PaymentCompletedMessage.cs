@@ -1,5 +1,4 @@
 ﻿using System;
-using ENode.Eventing;
 
 namespace Payments.Messages
 {

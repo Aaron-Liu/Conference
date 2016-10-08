@@ -1,11 +1,9 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Conference.Common;
 using ConferenceManagement.Commands;
+using ConferenceManagement.ReadModel;
 using ECommon.Components;
-using ECommon.Utilities;
+using ECommon.Socketing;
 using ENode.Commanding;
 using ENode.Configurations;
 using ENode.EQueue;
@@ -21,34 +19,17 @@ namespace ConferenceManagement.Web.Extensions
     {
         private static CommandService _commandService;
 
-        public static ENodeConfiguration RegisterAllTypeCodes(this ENodeConfiguration enodeConfiguration)
-        {
-            var provider = ObjectContainer.Resolve<ITypeCodeProvider>() as DefaultTypeCodeProvider;
-
-            //commands
-            provider.RegisterType<CreateConference>(200);
-            provider.RegisterType<UpdateConference>(201);
-            provider.RegisterType<AddSeatType>(202);
-            provider.RegisterType<UpdateSeatType>(203);
-            provider.RegisterType<RemoveSeatType>(204);
-            provider.RegisterType<PublishConference>(205);
-            provider.RegisterType<UnpublishConference>(206);
-            provider.RegisterType<MakeSeatReservation>(207);
-            provider.RegisterType<CommitSeatReservation>(208);
-            provider.RegisterType<CancelSeatReservation>(209);
-
-            return enodeConfiguration;
-        }
         public static ENodeConfiguration UseEQueue(this ENodeConfiguration enodeConfiguration)
         {
             var configuration = enodeConfiguration.GetCommonConfiguration();
 
             configuration.RegisterEQueueComponents();
 
-            _commandService = new CommandService(
-                new CommandResultProcessor(new IPEndPoint(SocketUtils.GetLocalIPV4(), 9000)),
-                "ConferenceCommandService",
-                new ProducerSetting { BrokerProducerIPEndPoint = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerProducerPort) });
+            _commandService = new CommandService(new CommandResultProcessor(new IPEndPoint(SocketUtils.GetLocalIPV4(), 9002)), new ProducerSetting
+            {
+                BrokerAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerProducerPort),
+                BrokerAdminAddress = new IPEndPoint(SocketUtils.GetLocalIPV4(), ConfigSettings.BrokerAdminPort)
+            });
 
             configuration.SetDefault<ICommandService, CommandService>(_commandService);
 

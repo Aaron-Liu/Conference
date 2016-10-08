@@ -10,6 +10,7 @@ namespace Registration.Commands.Orders
         public string LastName { get; set; }
         public string Email { get; set; }
 
+        public AssignRegistrantDetails() { }
         public AssignRegistrantDetails(Guid orderId) : base(orderId) { }
     }
 }

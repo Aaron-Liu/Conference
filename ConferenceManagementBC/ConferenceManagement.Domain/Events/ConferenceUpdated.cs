@@ -9,8 +9,7 @@ namespace ConferenceManagement
         public ConferenceEditableInfo Info { get; private set; }
 
         public ConferenceUpdated() { }
-        public ConferenceUpdated(Conference conference, ConferenceEditableInfo info)
-            : base(conference)
+        public ConferenceUpdated(ConferenceEditableInfo info)
         {
             Info = info;
         }

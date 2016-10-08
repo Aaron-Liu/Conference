@@ -16,7 +16,7 @@ namespace Payments
 
         public Payment(Guid id, Guid orderId, Guid conferenceId, string description, decimal totalAmount, IEnumerable<PaymentItem> items) : base(id)
         {
-            ApplyEvent(new PaymentInitiated(this, orderId, conferenceId, description, totalAmount, items));
+            ApplyEvent(new PaymentInitiated(orderId, conferenceId, description, totalAmount, items));
         }
 
         public void Complete()
@@ -33,7 +33,7 @@ namespace Payments
             {
                 throw new InvalidOperationException();
             }
-            ApplyEvent(new PaymentRejected(this, _orderId, _conferenceId));
+            ApplyEvent(new PaymentRejected(_orderId, _conferenceId));
         }
 
         private void Handle(PaymentInitiated evnt)

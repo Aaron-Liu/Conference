@@ -9,6 +9,7 @@ namespace Registration.Commands.SeatAssignments
         public int Position { get; set; }
         public PersonalInfo PersonalInfo { get; set; }
 
+        public AssignSeat() { }
         public AssignSeat(Guid orderId) : base(orderId) { }
     }
 }
